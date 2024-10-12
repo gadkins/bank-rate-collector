@@ -68,65 +68,12 @@ curl -X POST "https://wvceiydmh4.execute-api.us-east-2.amazonaws.com/Prod/extrac
     -d '{"url": "https://www.simplicity.coop/rates"}'
 ```
 
-## Local Development
-
-To run the application locally for development:
-
-1. Rename the `.env.example` file to `.env`:
-    ```bash
-    mv .env.example .env
-    ```
-
-2. set the following environment variables:
-
-- `OPENAI_API_KEY`: Your OpenAI API key. You can get an API key from the [OpenAI platform](https://platform.openai.com/api-keys).
-- `AWS_REGION`: The AWS region where the Lambda function will be deployed
-- `AWS_ACCESS_KEY_ID`: Your AWS access key ID
-- `AWS_SECRET_ACCESS_KEY`: Your AWS secret access key
-
-Alternatively, you can set the environment variables in your shell, for example: `
-
-    ```bash
-    export OPENAI_API_KEY='your-openai-api-key'
-    ```
-
-3. Configure a virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-   ```
-
-4. Install the development dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-5. Run the FastAPI application:
-   ```bash
-   uvicorn app.main:app --reload
-   ```
-
-The API will be available at `http://localhost:8000`.
-
-## How It Works
-
-The following components are used in the Bank Rate Collector API:
-
-- [x] The web scraper BeautifulSoup is used to scrape HTML tags from a list of websites.
-- [x] From the collected tags, we filter for `<table>`, `<h1>`, and `<h2>` tags, discarding the rest.
-- [x] These tables are converted into CSV to clean them up and reduce their character count using custom functions.  
-- [x] The CSV tables are then chunked to prepare them for sending to a large language model (LLM).
-- [x] Along with the table chunks, a structured schema (Pydantic object) is provided to the LLM to instruct it on how the data should be formatted in it's response.
-- [x] Special instructions can be provided to the LLM to handle edge cases or other behavior not well defined in the Pydantic object schema.
-- [x] Once the LLM receives the table chunks, structured schema response format, and special instructions, it responds with a list of JSON objects containing the banking rates, per the schema (OpenAI Python SDK now supports enfocing a `response_format` such as a Pydantic object. The SDK handles converting the data type to a supported JSON schema, deserializing the JSON response into the typed data structure automatically, and parsing refusals if they arise. See [OpenAI Structured Outputs](https://platform.openai.com/docs/guides/structured-outputs)).
-- [x] After all JSON objects are returned from the LLM, a post-processing script aggregates and deduplicates the data.
-
-### Structured Outputs
+### HTTP Response
 
 The application passes a Pydantic object to the LLM to enforce a structured response format. The Pydantic object is a schema that defines the structure of the response data. The OpenAI API will return a JSON object that conforms to this schema. The Pydantic object is defined in the `models.py` file.
 
 <details>
-  <summary>Show JSON schema</summary>
+  <summary>Show Response schema (JSON)</summary>
 
 ```json
 {
@@ -456,4 +403,58 @@ The application passes a Pydantic object to the LLM to enforce a structured resp
     }
 }
 ```
+
+## Local Development
+
+To run the application locally for development:
+
+1. Rename the `.env.example` file to `.env`:
+    ```bash
+    mv .env.example .env
+    ```
+
+2. set the following environment variables:
+
+- `OPENAI_API_KEY`: Your OpenAI API key. You can get an API key from the [OpenAI platform](https://platform.openai.com/api-keys).
+- `AWS_REGION`: The AWS region where the Lambda function will be deployed
+- `AWS_ACCESS_KEY_ID`: Your AWS access key ID
+- `AWS_SECRET_ACCESS_KEY`: Your AWS secret access key
+
+Alternatively, you can set the environment variables in your shell, for example: `
+
+    ```bash
+    export OPENAI_API_KEY='your-openai-api-key'
+    ```
+
+3. Configure a virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   ```
+
+4. Install the development dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+5. Run the FastAPI application:
+   ```bash
+   uvicorn app.main:app --reload
+   ```
+
+The API will be available at `http://localhost:8000`.
+
+## How It Works
+
+The following components are used in the Bank Rate Collector API:
+
+- [x] The web scraper BeautifulSoup is used to scrape HTML tags from a list of websites.
+- [x] From the collected tags, we filter for `<table>`, `<h1>`, and `<h2>` tags, discarding the rest.
+- [x] These tables are converted into CSV to clean them up and reduce their character count using custom functions.  
+- [x] The CSV tables are then chunked to prepare them for sending to a large language model (LLM).
+- [x] Along with the table chunks, a structured schema (Pydantic object) is provided to the LLM to instruct it on how the data should be formatted in it's response.
+- [x] Special instructions can be provided to the LLM to handle edge cases or other behavior not well defined in the Pydantic object schema.
+- [x] Once the LLM receives the table chunks, structured schema response format, and special instructions, it responds with a list of JSON objects containing the banking rates, per the schema (OpenAI Python SDK now supports enfocing a `response_format` such as a Pydantic object. The SDK handles converting the data type to a supported JSON schema, deserializing the JSON response into the typed data structure automatically, and parsing refusals if they arise. See [OpenAI Structured Outputs](https://platform.openai.com/docs/guides/structured-outputs)).
+- [x] After all JSON objects are returned from the LLM, a post-processing script aggregates and deduplicates the data.
+
 </details>
