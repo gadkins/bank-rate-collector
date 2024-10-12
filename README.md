@@ -38,14 +38,7 @@ bank-rate-collector/
    cd bank-rate-collector
    ```
 
-2. Create a virtual environment and install dependencies:
-   ```
-   python -m venv venv
-   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-   pip install -r requirements.txt
-   ```
-
-3. Store your OpenAI API key in AWS Secrets Manager:
+2. Store your OpenAI API key in AWS Secrets Manager:
    - Go to AWS Secrets Manager console
    - Create a new secret named `bank-rate-collector/openai-api-key`
    - Store your OpenAI API key as the secret value
