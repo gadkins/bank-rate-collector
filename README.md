@@ -2,7 +2,7 @@
 
 An AI-powered API that extracts bank interest rates from a given URL.  
 
-The API uses OpenAI's GPT-4o to extract the interest rates from a given URL. The API is built using FastAPI and deployed to AWS Lambda using the Serverless Framework.
+The API uses OpenAI's GPT-4o to extract the interest rates from a given URL. The API is built using FastAPI and deployed to AWS Lambda using the AWS Serverless Application Model (SAM).
 
 ## Project Structure
 
