@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pydantic
+requests
+openai
+boto3
+python-dotenv
+BeautifulSoup4
+selenium
+mangum

@@ -1,0 +1,88 @@
+# AWSTemplateFormatVersion: "2010-09-09"
+# Transform: AWS::Serverless-2016-10-31
+# Resources:
+#   FastAPIExtractFunction:
+#     Type: AWS::Serverless::Function
+#     Properties:
+#       Handler: app.main.handler
+#       Runtime: python3.10
+#       CodeUri: .
+#       Timeout: 10
+#       MemorySize: 512
+#       Environment:
+#         Variables:
+#           OPENAI_API_KEY: "bank-rate-collector/openai-api-key" # Store the secret name as an environment variable
+#       Policies:
+#         - Statement:
+#             Effect: Allow
+#             Action:
+#               - secretsmanager:GetSecretValue
+#             Resource: arn:aws:secretsmanager:us-east-2:128035544350:secret:bank-rate-collector/openai-api-key-YgkkZdx
+#       Events:
+#         FastAPI:
+#           Type: Api
+#           Properties:
+#             Path: /extract
+#             Method: post
+
+# Outputs:
+#   FastAPIEndpoint:
+#     Description: "URL for the FastAPI endpoint"
+#     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/extract"
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  FastAPI application deployed on AWS Lambda using SAM.
+
+Globals:
+  Function:
+    Timeout: 30 # Adjust based on your application's needs
+
+Resources:
+  FastAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      DefinitionBody:
+        openapi: 3.0.1
+        info:
+          title: FastAPI on Lambda
+          version: "1.0"
+        paths:
+          /extract:
+            post:
+              x-amazon-apigateway-integration:
+                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FastAPIFunction.Arn}/invocations"
+                httpMethod: POST
+                type: aws_proxy
+
+  FastAPIFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: fastapi-lambda-function
+      Handler: app.main.handler # Ensure this path is correct
+      Runtime: python3.10
+      CodeUri: .
+      MemorySize: 1024 # Adjust based on your application's needs
+      Environment:
+        Variables:
+          OPENAI_API_KEY: "bank-rate-collector/openai-api-key" # Store the secret name as an environment variable
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - Statement:
+            Effect: Allow
+            Action:
+              - secretsmanager:GetSecretValue
+            Resource: arn:aws:secretsmanager:us-east-2:128035544350:secret:bank-rate-collector/openai-api-key-YgkkZd
+      Events:
+        FastAPI:
+          Type: Api
+          Properties:
+            RestApiId: !Ref FastAPI
+            Path: /extract
+            Method: post
+
+Outputs:
+  FastAPIEndpoint:
+    Description: "URL for the FastAPI endpoint"
+    Value: !Sub "https://${FastAPI}.execute-api.${AWS::Region}.amazonaws.com/Prod/extract"
