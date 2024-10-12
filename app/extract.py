@@ -39,7 +39,7 @@ Text:
     client = OpenAI(api_key=get_openai_api_key())
 
     response = client.beta.chat.completions.parse(
-        model="gpt-4o-mini-2024-07-18",
+        model="gpt-4o",
         messages=[
             {"role": "system", "content": "You are a helpful assistant designed to output structured data."},
             {"role": "user", "content": prompt}
