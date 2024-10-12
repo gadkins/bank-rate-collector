@@ -79,18 +79,23 @@ curl -X POST "https://wvceiydmh4.execute-api.us-east-2.amazonaws.com/Prod/extrac
 
 To run the application locally for development:
 
-1. Set the following environment variables in the `.env` file:
+1. Rename the `.env.example` file to `.env`:
+    ```bash
+    mv .env.example .env
+    ```
 
-- `OPENAI_API_KEY`: Your OpenAI API key
+2. set the following environment variables:
+
+- `OPENAI_API_KEY`: Your OpenAI API key. You can get an API key from the [OpenAI platform](https://platform.openai.com/api-keys).
 - `AWS_REGION`: The AWS region where the Lambda function will be deployed
 - `AWS_ACCESS_KEY_ID`: Your AWS access key ID
 - `AWS_SECRET_ACCESS_KEY`: Your AWS secret access key
 
 Alternatively, you can set the environment variables in your shell, for example: `
 
-```bash
-export OPENAI_API_KEY='your-openai-api-key'
-```
+    ```bash
+    export OPENAI_API_KEY='your-openai-api-key'
+    ```
 
 2. Configure a virtual environment:
    ```bash

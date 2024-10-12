@@ -24,6 +24,7 @@ wheels/
 venv/
 ENV/
 proBankRatesEnv/
+.env
 
 # IDEs and Editors
 .vscode/
