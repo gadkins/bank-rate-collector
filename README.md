@@ -79,12 +79,23 @@ curl -X POST "https://wvceiydmh4.execute-api.us-east-2.amazonaws.com/Prod/extrac
 
 To run the application locally for development:
 
-1. Set up environment variables:
+1. Set the [OpenAI API key](https://platform.openai.com/api-keys) as an environment variable:
    ```bash
    export OPENAI_API_KEY='your-openai-api-key'
    ```
 
-2. Run the FastAPI application:
+2. Configure a virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   ```
+
+3. Install the development dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Run the FastAPI application:
    ```bash
    uvicorn app.main:app --reload
    ```
